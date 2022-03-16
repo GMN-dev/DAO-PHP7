@@ -1,0 +1,17 @@
+Minha dúvida:
+pq um método que possui 2 parâmetros (sql->select($rawQuery, $params = array()) do arquivo Sql.php)
+ aceita somente um parâmetro qdo é chamada (a string 'select * from tb_usuarios' no arquivo index.php)?
+
+ 
+ 
+Pedro Paulo
+Luciano, a função select pode aceitar apenas um parâmetro porque na definição dela:
+
+public function select($rawQuery, $params = array()):array {  //bloco de código  }
+
+repare que foi colocado um valor padrão para o parâmetro $params, ou seja, se não for passado nenhum valor 
+pra ele na hora de executar essa função, ele vai assumir o valor de um array vazio. Aí como na classe a função select chama
+ a função query, esse paramêtro $params já chega na função query como sendo um array vazio e, por conseguinte,
+  a função query chama a função setParams que também recebe esse parâmetro como um array vazio. Dessa forma,
+   quando chega no loop da função setParams, como o array está vazio, logo o loop não é executado nenhuma vez e, portanto,
+    a consulta "SELECT * FROM tb_usuarios" acontece tranquilamente sem o segundo parâmetro.
