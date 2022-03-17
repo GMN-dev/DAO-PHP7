@@ -1,8 +1,10 @@
 <?php
 require_once("config.php");
 
-$sql = new Sql();
+$user = new Usuario(2);
 
-$sql->select("SELECT * FROM tabela_usuarios");
+echo $user;
+
+
 
 ?>
