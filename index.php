@@ -1,10 +1,8 @@
 <?php
 require_once("config.php");
 
-$user = new Usuario(2);
+$retornoParaTela = new Usuario;
+$retornoParaTela->setUsuarioById(2);
 
-echo $user;
-
-
-
+echo $retornoParaTela;
 ?>

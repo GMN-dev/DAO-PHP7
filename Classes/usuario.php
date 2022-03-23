@@ -1,12 +1,12 @@
 <?php
 
+
 class Usuario{
     private $id;
-    private $deslogin;
-    private $dessenha;
+    private $login;
+    private $senha;
     private $dtcadastro;
 
-    // G/S ID
     public function setId($idInput){
         $this->id = $idInput;
     }
@@ -14,51 +14,89 @@ class Usuario{
         return $this->id;
     }
 
-    // G/S deslogin
-    public function setDeslogin($desloginInput){
-        $this->deslogin = $desloginInput;
+    public function setLogin($loginInput){
+        $this->login = $loginInput;
     }
-    public function getDeslogin(){
-        return $this->deslogin;
-    }
-
-    // G/S dessenha
-    public function setDessenha($dessenhaInput){
-        $this->dessenha = $dessenhaInput;
-    }
-    public function getDessenha(){
-        return $this->dessenha;
+    public function getLogin(){
+        return $this->login;
     }
 
-    // G/s dtcadastro
+    public function setSenha($senhaInput){
+        $this->senha = $senhaInput;
+    }
+    public function getSenha(){
+        return $this->senha;
+    }
+
     public function setDtcadastro($dtcadastroInput){
         $this->dtcadastro = $dtcadastroInput;
     }
-    public function getDtcadasdtro(){
+    public function getDtcadastro(){
         return $this->dtcadastro;
     }
 
-    //Método construtor:
-    public function __construct($id){
-        $chamadaBD = new Sql();
-        $linhaTabela = $chamadaBD->selection("SELECT * FROM tabela_usuarios WHERE id = :ID", array(":ID"=>$id));
+    // mÉTODOS
+    public function __toString(){
+        return
+        "Id: {$this->getId()} <br>
+        Login: {$this->getLogin()} <br>
+        Senha: {$this->getSenha()} <br>
+        Data de Cadastro: {$this->getDtcadastro()}";             
+    }
+
+
+    public function setUsuarioById($idInput){
+        $database = new Sql();
+        $rowsTable = $database->listDataBase("SELECT * FROM tabela_usuarios WHERE id = :ID", array(":ID" => $idInput));
         
-        $this->setId($linhaTabela['id']);
-        $this->setDeslogin($linhaTabela['deslogin']);
-        $this->setDessenha($linhaTabela['dessenha']);
-        $this->setDtcadastro($linhaTabela['dtcadastro']);
+        //Setting
+        $this->setId($rowsTable["id"]);
+        $this->setLogin($rowsTable["deslogin"]);
+        $this->setSenha($rowsTable["dessenha"]);
+        $this->setDtcadastro($rowsTable["dtcadastro"]);
+    }
+
+
+    public static function searchByLoginCharacters($loginInput){
+        $database = new Sql();
+        $rowsTable = $database->listDataBase("SELECT * FROM tabela_usuarios WHERE deslogin LIKE :LOGIN;",array(":LOGIN" => '%' . $loginInput . '%'));
+
+        if ((count($rowsTable) >= 1) and ($loginInput != "")){
+            return json_encode($rowsTable);
+        }
+        else{
+            return "!!! Sem informaçãoes !!!";
+        }
+        
+    }
+
+    public static function showAllData(){
+        $database = new Sql();
+        $rowsTable = $database->listDataBase("SELECT * FROM tabela_usuarios ORDER BY deslogin;");
+        
+        return json_encode($rowsTable);
+    }
+
+
+    public function setUsuarioByAuthenticated($loginInput, $senhaInput){
+        $database = new Sql();
+        $rowsTable = $database->listDataBase("SELECT * FROM tabela_usuarios WHERE deslogin = :LOGIN AND dessenha = :PASSWORD;", array(":LOGIN"=>$loginInput, ":PASSWORD"=>$senhaInput));
+        
+
+        if(count($rowsTable) >= 1){
+            $this->setId($rowsTable["id"]);
+            $this->setLogin($rowsTable["deslogin"]);
+            $this->setSenha($rowsTable["dessenha"]);
+            $this->setDtcadastro($rowsTable["dtcadastro"]);
+        }
+        else{
+            return "!!! Esse usuario, não esta cadastrado !!! <br> Verifique os dados inseridos";
+        }
+
 
     }
 
-    public function __toString()
-    {
-        return "Id de usuario: {$this->getId()} <br>
-        Nome de login do usuario: {$this->getDeslogin()} <br>
-        Sua senha: {$this->getDessenha()} <br>
-        Data de criação de conta: {$this->getDtcadasdtro()}";
-    }
 
 }
-
 
 ?>

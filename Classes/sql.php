@@ -1,33 +1,45 @@
 <?php
 
 class Sql extends PDO{
-    private $conn;
-    
+    private $conex;
+
     public function __construct(){
-        $this->conn = new PDO("mysql:host=localhost;dbname=dbphp; 'root', ''");
+        $this->conex = new PDO("mysql:dbname=db;hostname=localhost'root',''");
+
     }
 
+    public function setParam($stmt, $chave, $valor){
+        $stmt->bindParam($chave, $valor);
+    }
 
-    //Serve para preparar a query e ligar os parametros a query
-    private function prepareQuery($rawQuery, $params = array()){
-        $stmt = $this->conn->prepare($rawQuery);
+    public function prepareQuery($stringQuery, $params = array()){
+        $query = $this->conex->prepare($stringQuery);
 
-        foreach($params as $paramKey => $paramValue){
-            $stmt->bindParam($paramKey, $paramValue);
+        foreach ($params as $key => $value) {
+            $this->setParam($query, $key, $value);
         }
-        $stmt->execute();
+        $query->execute();
 
-        return $stmt;
+        return $query;
     }
 
-    //Essa função retorna a tabela
-    public function selection($rawQuery, $params = array()){
-        $statment = $this->prepareQuery($rawQuery, $params);
-        
-        $response = $statment->fetchAll(PDO::FETCH_ASSOC)[0];
-        return $response;
+
+    public function listDataBase($rawQuery, $parameters = array()){
+        $stmt = $this->prepareQuery($rawQuery, $parameters);
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        if (count($result) > 1){
+            return $result;
+        }
+        else{
+            return $result[0];
+        }
     }
+
 
 }
+
+
 
 ?>
