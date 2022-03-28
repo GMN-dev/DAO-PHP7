@@ -1,5 +1,7 @@
 <?php
 
+use LDAP\Result;
+
 class Sql extends PDO{
     private $conex;
 
@@ -12,6 +14,7 @@ class Sql extends PDO{
         $stmt->bindParam($chave, $valor);
     }
 
+    //prepara as querys SQL
     public function prepareQuery($stringQuery, $params = array()){
         $query = $this->conex->prepare($stringQuery);
 
@@ -23,13 +26,14 @@ class Sql extends PDO{
         return $query;
     }
 
-
+    //retorna lista Do banco
     public function listDataBase($rawQuery, $parameters = array()){
         $stmt = $this->prepareQuery($rawQuery, $parameters);
-
+        
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         if (count($result) > 1){
+            
             return $result;
         }
         else{
