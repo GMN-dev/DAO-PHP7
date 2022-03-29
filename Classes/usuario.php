@@ -103,7 +103,7 @@ class Usuario{
     }
     
     //Métodos para inserção de dados
-    public function insert($login, $senha){
+    public static function insert($login, $senha){
         $dataBase = new Sql();
         $response = $dataBase->prepareQuery("INSERT INTO tabela_usuarios(deslogin, dessenha) VALUES(:LOGIN, :PASSWORD);", array(":LOGIN"=>$login, "PASSWORD"=>$senha));
 
@@ -114,6 +114,11 @@ class Usuario{
         $dataBase = new Sql();
         $response = $dataBase->prepareQuery("UPDATE tabela_usuarios SET deslogin = :LOGIN, dessenha = :PASSWORD WHERE id = {$this->getId()}", array(":LOGIN"=>$login, ":PASSWORD"=>$senha));
         // var_dump($response);
+    }
+
+    public static function delete($id){
+        $database = new Sql();
+        $response = $database->prepareQuery("DELETE FROM tabela_usuarios WHERE id = :ID;", array(":ID"=>$id));
     }
 }
 

@@ -1,14 +1,7 @@
 <?php
 require_once("config.php");
 
-$retornoParaTela = new Usuario();
-
-$retornoParaTela->setUsuarioById(5);
-
-$retornoParaTela->update("marcola", "beramar");
-
-$retornoParaTela->setUsuarioById(5);
-
+Usuario::delete(2);
 // echo $retornoParaTela;
 echo Usuario::showAllData();
 ?>
